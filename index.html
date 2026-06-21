@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Business Lab — SPtLDV</title>
+    <!--
+        Struktur Folder:
+        /index.html
+        /assets/images/profil.png
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config={theme:{extend:{colors:{coffee:{50:'#FFF8F0',100:'#F5E6D3',200:'#E8CBA7',300:'#D4A053',400:'#B8862D',500:'#8B6914',600:'#5C3A21',700:'#3C2415',800:'#2C1810',900:'#1A0F0A'}},fontFamily:{display:['Playfair Display','serif'],body:['DM Sans','sans-serif']}}}}
+    </script>
+    <style>
+        :root{--bg:#FFF8F0;--bg2:#F5E6D3;--fg:#2C1810;--muted:#8B7355;--accent:#D4A053;--accent2:#B8862D;--card:#fff;--border:#E8CBA7;--success:#2E7D32;--error:#C62828;--dark:#1A0F0A;--dark2:#2C1810;--gold:#F0C675}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--fg);overflow-x:hidden}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+        #splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#1A0F0A 0%,#3C2415 40%,#5C3A21 100%);transition:opacity .6s,visibility .6s}
+        #splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .splash-cup{width:80px;height:80px;position:relative;margin-bottom:24px}
+        .splash-cup .cup-body{width:60px;height:50px;background:var(--accent);border-radius:0 0 12px 12px;margin:20px auto 0;position:relative;overflow:hidden}
+        .splash-cup .cup-fill{position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(0deg,#3C2415,#5C3A21);transition:height .1s}
+        .splash-cup .cup-handle{width:16px;height:24px;border:4px solid var(--accent);border-left:none;border-radius:0 12px 12px 0;position:absolute;right:-18px;top:28px}
+        .splash-steam{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
+        .splash-steam span{width:3px;height:20px;background:rgba(255,248,240,.3);border-radius:2px;animation:steam 1.5s ease-in-out infinite}
+        .splash-steam span:nth-child(2){animation-delay:.3s;height:28px}
+        .splash-steam span:nth-child(3){animation-delay:.6s;height:16px}
+        @keyframes steam{0%,100%{transform:translateY(0) scaleY(1);opacity:.3}50%{transform:translateY(-12px) scaleY(1.4);opacity:.7}}
+        .splash-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;color:var(--gold);text-align:center;line-height:1.1}
+        .splash-sub{color:rgba(255,248,240,.6);font-size:.95rem;margin-top:8px;letter-spacing:2px;text-transform:uppercase}
+        .splash-bar-wrap{width:220px;height:4px;background:rgba(255,248,240,.1);border-radius:2px;margin-top:32px;overflow:hidden}
+        .splash-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:2px;transition:width .15s}
+        .splash-pct{color:rgba(255,248,240,.4);font-size:.75rem;margin-top:6px;min-height:18px}
+        #btnStart{margin-top:24px;padding:14px 40px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;border:none;border-radius:50px;cursor:pointer;opacity:0;transform:translateY(12px);transition:all .5s;box-shadow:0 4px 24px rgba(212,160,83,.3)}
+        #btnStart.show{opacity:1;transform:translateY(0)}
+        #btnStart:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(212,160,83,.5)}
+        #app{opacity:0;transition:opacity .5s}#app.show{opacity:1}
+        .navbar{background:linear-gradient(135deg,var(--dark),var(--dark2));padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.2)}
+        .navbar .brand{display:flex;align-items:center;gap:10px}
+        .navbar .brand i{color:var(--accent);font-size:1.4rem}
+        .navbar .brand h1{font-family:'Playfair Display',serif;font-size:clamp(1rem,3vw,1.3rem);color:var(--gold);font-weight:700}
+        .navbar .brand small{color:rgba(255,248,240,.5);font-size:.7rem;display:block;letter-spacing:1px}
+        .nav-right{display:flex;align-items:center;gap:12px}
+        .pts-badge{background:rgba(212,160,83,.15);border:1px solid rgba(212,160,83,.3);color:var(--gold);padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:600}
+        .sound-btn{background:none;border:1px solid rgba(255,248,240,.2);color:rgba(255,248,240,.6);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:.85rem;transition:all .2s}
+        .sound-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .role-badge{background:rgba(46,125,50,.15);border:1px solid rgba(46,125,50,.3);color:#81C784;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:500}
+        .tab-bar{display:flex;background:var(--card);border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+        .tab-bar::-webkit-scrollbar{display:none}
+        .tab-btn{flex:1;min-width:90px;padding:12px 6px;text-align:center;font-size:.78rem;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+        .tab-btn:hover{color:var(--fg);background:rgba(212,160,83,.05)}
+        .tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent);background:rgba(212,160,83,.05)}
+        .tab-btn i{display:block;font-size:1.1rem;margin-bottom:2px}
+        .tab-panel{display:none;padding:24px;max-width:1200px;margin:0 auto;animation:fadeUp .35s ease}
+        .tab-panel.active{display:block}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:0 2px 12px rgba(44,24,16,.04);transition:box-shadow .2s}
+        .card:hover{box-shadow:0 4px 20px rgba(44,24,16,.08)}
+        .card-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--dark2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+        .card-title i{color:var(--accent)}
+        .sim-grid{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+        @media(max-width:860px){.sim-grid{grid-template-columns:1fr}}
+        .input-group{margin-bottom:14px}
+        .input-group label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+        .input-row{display:flex;gap:6px;align-items:center}
+        .input-row span{font-weight:600;color:var(--dark2);font-size:.9rem}
+        .input-field{width:64px;padding:8px 6px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;text-align:center;font-family:'DM Sans',sans-serif;font-weight:600;color:var(--dark2);background:#fff;transition:border-color .2s}
+        .input-field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,160,83,.15)}
+        .input-field.correct{border-color:var(--success);background:#E8F5E9}
+        .input-field.wrong{border-color:var(--error);background:#FFEBEE}
+        .slider-wrap{display:flex;align-items:center;gap:8px;margin-top:4px}
+        .slider-wrap input[type=range]{flex:1;accent-color:var(--accent);height:6px}
+        .slider-val{min-width:36px;text-align:center;font-weight:700;color:var(--accent2);font-size:.9rem}
+        .btn{padding:10px 20px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+        .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px rgba(212,160,83,.3)}
+        .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(212,160,83,.4)}
+        .btn-outline{background:none;border:1.5px solid var(--border);color:var(--muted)}
+        .btn-outline:hover{border-color:var(--accent);color:var(--accent2)}
+        .btn-sm{padding:6px 14px;font-size:.78rem;border-radius:8px}
+        .btn-snap{background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;border:none;padding:5px 12px;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .btn-snap:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(21,101,192,.3)}
+        .canvas-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(44,24,16,.04)}
+        .canvas-wrap canvas{width:100%;height:auto;border-radius:8px;display:block}
+        .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+        @media(max-width:600px){.result-grid{grid-template-columns:1fr}}
+        .result-card{text-align:center;padding:16px;border-radius:12px;border:1.5px solid var(--border)}
+        .result-card.pred{background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-color:#FFB74D}
+        .result-card.sim{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-color:#81C784}
+        .result-card.diff{background:linear-gradient(135deg,#E3F2FD,#BBDEFB);border-color:#64B5F6}
+        .result-card h4{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+        .result-card .val{font-size:1.4rem;font-weight:700}
+        .result-card.pred .val{color:#E65100}
+        .result-card.sim .val{color:#1B5E20}
+        .result-card.diff .val{color:#1565C0}
+        .stars{font-size:1.6rem;color:var(--border);margin:8px 0}
+        .stars .lit{color:var(--gold)}
+        .corner-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:12px 0}
+        .corner-table th{background:var(--dark2);color:var(--gold);padding:8px 12px;text-align:center;font-weight:600}
+        .corner-table td{padding:8px 12px;text-align:center;border-bottom:1px solid var(--border)}
+        .corner-table tr.optimal{background:#E8F5E9;font-weight:700}
+        .explanation{background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-left:4px solid var(--accent);padding:16px;border-radius:0 10px 10px 0;font-size:.88rem;line-height:1.7}
+        .howto-box{background:#FFFCF7;border:1.5px solid var(--border);border-radius:12px;padding:20px}
+        .howto-box h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--dark2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+        .howto-box h3 i{color:var(--accent)}
+        .howto-step{display:flex;gap:12px;margin-bottom:16px;align-items:flex-start}
+        .howto-num{min-width:28px;height:28px;background:var(--dark2);color:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;flex-shrink:0;margin-top:2px}
+        .howto-step p{font-size:.85rem;line-height:1.7;color:#444}
+        .howto-step .math-line{background:var(--bg);padding:8px 14px;border-radius:8px;font-family:'DM Sans',monospace;font-size:.88rem;margin:6px 0;color:var(--dark2);border-left:3px solid var(--accent)}
+        .howto-step .math-line .hl{color:var(--success);font-weight:700}
+        .howto-step .math-line .dim{color:var(--muted);font-size:.8rem}
+        .howto-step .math-line .bad{color:var(--error);text-decoration:line-through}
+        .teori-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+        .formula-box{background:var(--dark2);color:var(--gold);padding:16px 20px;border-radius:10px;font-family:'DM Sans',monospace;font-size:1rem;text-align:center;letter-spacing:.5px}
+        .step-list{counter-reset:step}
+        .step-item{counter-increment:step;display:flex;gap:14px;margin-bottom:20px;align-items:flex-start}
+        .step-num{min-width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0}
+        .step-item h4{font-size:.95rem;font-weight:700;margin-bottom:2px}
+        .step-item p{font-size:.85rem;color:var(--muted);line-height:1.6}
+        .lkpd-q{margin-bottom:24px}
+        .lkpd-q h4{font-size:.92rem;font-weight:700;margin-bottom:8px;color:var(--dark2)}
+        .lkpd-q textarea{width:100%;min-height:60px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.88rem;resize:vertical;transition:border-color .2s}
+        .lkpd-q textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,160,83,.12)}
+        .lkpd-q .fb{margin-top:6px;font-size:.78rem;font-weight:600;min-height:20px}
+        .dev-card{text-align:center;max-width:400px;margin:0 auto}
+        .dev-card img{width:160px;height:200px;object-fit:cover;border-radius:16px;border:4px solid var(--accent);box-shadow:0 8px 32px rgba(44,24,16,.15);margin-bottom:16px}
+        .dev-card h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--dark2)}
+        .dev-card .role{color:var(--accent2);font-size:.85rem;font-weight:600;margin-bottom:16px}
+        .tech-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+        .tech-tag{background:var(--bg2);color:var(--dark2);padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:600}
+        #toasts{position:fixed;top:80px;right:20px;z-index:9000;display:flex;flex-direction:column;gap:8px}
+        .toast{padding:12px 20px;border-radius:10px;font-size:.85rem;font-weight:500;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.15);animation:toastIn .3s ease;min-width:240px;max-width:360px}
+        .toast.info{background:linear-gradient(135deg,#1565C0,#1976D2)}
+        .toast.success{background:linear-gradient(135deg,#2E7D32,#43A047)}
+        .toast.error{background:linear-gradient(135deg,#C62828,#E53935)}
+        .toast.warning{background:linear-gradient(135deg,#E65100,#F57C00)}
+        .toast.out{animation:toastOut .3s ease forwards}
+        @keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes toastOut{to{opacity:0;transform:translateX(40px)}}
+        .app-footer{text-align:center;padding:20px;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);margin-top:20px}
+        .constraint-block{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px}
+        .constraint-block .cb-title{font-size:.75rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+        .slider-hint{font-size:.7rem;color:var(--muted);margin-top:2px;font-style:italic}
+        /* Indikator bilangan bulat */
+        .int-indicator{border-radius:10px;padding:12px 14px;margin-top:12px;display:flex;align-items:flex-start;gap:10px;font-size:.82rem;line-height:1.6;transition:all .3s}
+        .int-indicator.ok{background:#E8F5E9;border:1px solid #A5D6A7;color:#2E7D32}
+        .int-indicator.bad{background:#FFEBEE;border:1px solid #EF9A9A;color:#C62828}
+        .int-indicator.wait{background:#FFF8E1;border:1px solid #FFE082;color:#E65100}
+        .int-indicator i{font-size:1rem;margin-top:2px;flex-shrink:0}
+        @media(max-width:600px){.tab-panel{padding:14px}.sim-grid{gap:14px}.input-field{width:52px;padding:6px 4px}}
+        @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    </style>
+</head>
+<body class="font-body">
+
+<!-- SPLASH -->
+<div id="splash" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/images/P1.png'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh; width: 100%;">
+    <div class="splash-steam"><span></span><span></span><span></span></div>
+    <div class="splash-cup"><div class="cup-body"><div class="cup-fill" id="cupFill"></div></div><div class="cup-handle"></div></div>
+    
+    <div class="splash-icon">
+        <img src="assets/images/P2.png" style="width: 45%; height: auto; display: block; margin: 0% auto; object-fit: contain;">
+    </div>
+    
+    <div class="splash-subtitle" style="text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px var(--primary-light); font-weight: 600;"></div>
+
+    <div class="splash-bar-wrap"><div class="splash-bar" id="splashBar"></div></div>
+    <div class="splash-pct" id="splashPct">Memuat komponen...</div>
+    <button id="btnStart" onclick="startApp()"><i class="fas fa-play"></i>&ensp;Mulai Laboratorium</button>
+<!-- Pastikan memanggil fungsi startApp() -->
+<button id="btnStart" onclick="startApp()"><i class="fas fa-play"></i>&ensp;Mulai Laboratorium</button>
+</div>
+<!-- APP -->
+<div id="app">
+    <nav class="navbar">
+        <div class="brand"><i class="fas fa-mug-hot"></i><div><h1>Coffee Business Lab</h1><small>Sistem Pertidaksamaan Linear Dua Variabel</small></div></div>
+        <div class="nav-right">
+            <span class="role-badge"><i class="fas fa-chart-line"></i> Junior Business Analyst</span>
+            <span class="pts-badge" id="ptsBadge"><i class="fas fa-star"></i> <span id="ptsVal">0</span> Poin</span>
+            <button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="Suara"><i class="fas fa-volume-high"></i></button>
+
+<!-- Kontrol Volume Geser Baru -->
+<div class="volume-container" style="display: flex; align-items: center; gap: 8px; background: rgba(255, 248, 240, 0.05); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,248,240,.15);">
+    <span id="volumeIcon" style="font-size: 0.9rem;">🔊</span>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.5" oninput="changeVolume(this.value)" style="width: 80px; accent-color: var(--accent); cursor: pointer; height: 4px;">
+</div>
+
+        </div>
+    </nav>
+
+    <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" onclick="switchTab('teori')" role="tab"><i class="fas fa-book-open"></i>Teori</button>
+        <button class="tab-btn" onclick="switchTab('prosedur')" role="tab"><i class="fas fa-list-ol"></i>Prosedur</button>
+        <button class="tab-btn" onclick="switchTab('simulasi')" role="tab"><i class="fas fa-flask"></i>Simulasi</button>
+        <button class="tab-btn" onclick="switchTab('lkpd')" role="tab"><i class="fas fa-pencil-alt"></i>LKPD</button>
+        <button class="tab-btn" onclick="switchTab('pengembang')" role="tab"><i class="fas fa-code"></i>Pengembang</button>
+    </div>
+
+    <!-- TEORI -->
+    <div class="tab-panel active" id="panel-teori">
+ <div class="card">
+            <div class="card-title"><i class="fas fa-lightbulb"></i> Mengapa harus mempelajari SPtLDV?</div>
+            <p style="line-height:1.8;font-size:.92rem;color:#444"><strong>Di balik setiap secangkir kopi yang terjual, terdapat keputusan bisnis yang harus dibuat secara optimal.</strong> Sumber daya seperti bahan baku, waktu produksi, dan modal memiliki keterbatasan, sedangkan keuntungan harus dimaksimalkan. Dalam situasi inilah SPtLDV digunakan. </p>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><i class="fas fa-lightbulb"></i> Apa itu SPtLDV?</div>
+            <p style="line-height:1.8;font-size:.92rem;color:#444"><strong>Sistem Pertidaksamaan Linear Dua Variabel (SPtLDV)</strong> adalah kumpulan beberapa pertidaksamaan linear yang memiliki dua variabel (<em>x</em> dan <em>y</em>) yang mana dua atau lebih pertidaksamaan linear diterapkan secara bersamaan. Penyelesaiannya berupa suatu <strong>daerah fisibel</strong> (feasible region) pada bidang koordinat Cartesian.</p>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-square-root-variable"></i> Bentuk Umum</div>
+            <div class="formula-box" style="margin-bottom:12px">a&#8321;x + b&#8321;y &le; c&#8321;<br>a&#8322;x + b&#8322;y &le; c&#8322;<br>...<br>x &ge; 0, y &ge; 0<br><br><strong>Maksimumkan</strong> Z = px + qy</div>
+            <p style="font-size:.85rem;color:var(--muted);line-height:1.7">Setiap pertidaksamaan merepresentasikan satu <strong>kendala (constraint)</strong>, seperti modal usaha, ketersediaan bahan baku, waktu proses produksi, dll., sedangkan Z = px + qy disebut <strong>fungsi tujuan (objective function)</strong>, seperti keuntungan bisnis, dan sebagainya.</p>
+<p style="font-size:.85rem;color:var(--muted);line-height:1.7"><br><strong>Contoh Konteks Coffee Lab:</strong><br/>Sebuah kedai memproduksi:
+Es Kopi Susu (x)
+Americano (y)
+dengan kendala stok biji kopi: 
+15x + 20y ≤ 600.</p>
+        </div>
+
+<!-- Komponen Program Linear -->
+<div class="card">
+    <div class="card-title"><i class="fas fa-list-ol"></i> <strong>Komponen Penting dalam Program Linear</strong></div>
+    <ol style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li><strong>📦 Variabel Keputusan:</strong> Jumlah produk yang akan diproduksi.</li>
+        <li><strong>🛑 Kendala (Constraints):</strong> Keterbatasan sumber daya yang tersedia.</li>
+        <li><strong>📈 Garis Batas:</strong> Representasi grafik dari setiap kendala.</li>
+        <li><strong>📐 Daerah Penyelesaian:</strong> Irisan seluruh daerah yang memenuhi semua kendala.</li>
+        <li><strong>⭐ Titik Pojok (Vertex):</strong> Titik sudut daerah penyelesaian yang menjadi kandidat solusi optimum.</li>
+        <li><strong>🎯 Fungsi Tujuan (Objective Function):</strong> Fungsi yang akan dimaksimalkan atau diminimalkan (Contoh: <em>Z = px + qy</em>).</li>
+    </ol>
+</div>
+
+<!-- Mengapa SPtLDV Penting -->
+<div class="card">
+    <div class="card-title"><i class="fas fa-chart-line"></i> <strong>Mengapa SPtLDV Penting bagi Business Analyst?</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444">
+        <strong>SPtLDV</strong> merupakan fondasi Program Linear yang digunakan untuk menentukan kombinasi produksi terbaik agar keuntungan maksimum dapat diperoleh tanpa melanggar keterbatasan sumber daya.
+    </p>
+</div>
+
+<!-- Ilustrasi Daerah Penyelesaian + Grafik SVG (Perbaikan Garis Merah) -->
+<div class="card">
+    <div class="card-title"><i class="fas fa-paint-brush"></i> <strong>Ilustrasi Daerah Penyelesaian</strong></div>
+    
+    <!-- Grafik Diagram Cartesian Terintegrasi -->
+    <div style="text-align: center; margin: 20px 0; background-color: #fcfcfc; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+        <svg viewBox="0 0 400 350" width="100%" style="max-width: 400px; font-family: sans-serif;">
+            <!-- Grid Lines Horizontal -->
+            <line x1="50" y1="50" x2="380" y2="50" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="50" y1="112.5" x2="380" y2="112.5" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="50" y1="175" x2="380" y2="175" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="50" y1="237.5" x2="380" y2="237.5" stroke="#f0f0f0" stroke-width="1" />
+            
+            <!-- Grid Lines Vertikal -->
+            <line x1="132.5" y1="50" x2="132.5" y2="300" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="215" y1="50" x2="215" y2="300" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="297.5" y1="50" x2="297.5" y2="300" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="380" y1="50" x2="380" y2="300" stroke="#f0f0f0" stroke-width="1" />
+
+            <!-- Daerah Penyelesaian (Arsiran Hijau) -->
+            <polygon points="50,300 50,175 256.25,253.125 297.5,300" fill="#2ecc71" fill-opacity="0.25" stroke="#2ecc71" stroke-width="1" stroke-dasharray="4" />
+
+            <!-- Sumbu X dan Y -->
+            <line x1="50" y1="300" x2="390" y2="300" stroke="#333" stroke-width="2" />
+            <line x1="50" y1="300" x2="50" y2="30" stroke="#333" stroke-width="2" />
+
+            <!-- Garis Kendala 1 (Biru): 3x + y = 90 -> Memotong (0,90) dan (30,0) -->
+            <line x1="50" y1="18.75" x2="297.5" y2="300" stroke="#3498db" stroke-width="2" />
+            
+            <!-- Perbaikan Garis Kendala 2 (Merah): x + y = 40 -> Memotong (0,40) dan (40,0) -->
+            <line x1="50" y1="175" x2="380" y2="300" stroke="#e74c3c" stroke-width="2" />
+
+            <!-- Titik-Titik Sudut / Pojok -->
+            <circle cx="50" cy="300" r="4" fill="#333" />
+            <circle cx="50" cy="175" r="4" fill="#333" />
+            <circle cx="297.5" cy="300" r="4" fill="#333" />
+            <circle cx="380" cy="300" r="3" fill="#666" />
+            <!-- Titik Optimum (25, 15) -->
+            <circle cx="256.25" cy="253.125" r="6" fill="#e74c3c" />
+            <circle cx="256.25" cy="253.125" r="10" fill="none" stroke="#e74c3c" stroke-width="1" opacity="0.6" />
+
+            <!-- Label Teks Koordinat Utama -->
+            <text x="35" y="315" font-size="10" fill="#666">(0,0)</text>
+            <text x="15" y="179" font-size="10" fill="#666">(0,40)</text>
+            <text x="285" y="315" font-size="10" fill="#666">(30,0)</text>
+            <text x="370" y="315" font-size="10" fill="#666">(40,0)</text>
+            <text x="268" y="250" font-size="10" fill="#e74c3c" font-weight="bold">(25,15) Optimum</text>
+
+            <!-- Nama Sumbu -->
+            <text x="340" y="285" font-size="11" font-weight="bold" fill="#333">X (Arabika)</text>
+            <text x="60" y="45" font-size="11" font-weight="bold" fill="#333">Y (Robusta)</text>
+
+            <!-- Legenda Kecil -->
+            <rect x="230" y="60" width="12" height="12" fill="#2ecc71" fill-opacity="0.3" stroke="#2ecc71" />
+            <text x="250" y="71" font-size="10" fill="#444">Daerah Penyelesaian</text>
+        </svg>
+    </div>
+
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li><strong>- Garis Batas:</strong> Garis biru (<em>3x + y = 90</em>) dan garis merah (<em>x + y = 40</em>) yang membatasi kapasitas mesin.</li>
+        <li><strong>- Daerah Penyelesaian:</strong> Area transparan berwarna hijau yang dibatasi oleh titik-titik sudut.</li>
+        <li><strong>- Titik Optimum:</strong> Berada di titik pojok perpotongan garis merah dan biru yaitu titik <strong>(25, 15)</strong>.</li>
+    </ul>
+    <p style="line-height:1.8; font-size:.92rem; color:#444">
+        <strong>Keterangan:</strong> Area berwarna menunjukkan seluruh kombinasi (x, y) yang memenuhi semua kendala.
+    </p>
+</div>
+
+<!-- Contoh Kasus Lengkap -->
+<div class="card">
+    <div class="card-title"><i class="fas fa-coffee"></i> <strong>Contoh Kasus Lengkap: Bisnis Kedai Kopi</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444">
+        Sebuah kedai kopi memproduksi dua jenis kopi dengan keterbatasan waktu mesin sebagai berikut:
+    </p>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>1. <strong>Mesin Roasting:</strong> Maksimal 90 jam/minggu.</li>
+        <li>2. <strong>Mesin Packaging:</strong> Maksimal 40 jam/minggu.</li>
+    </ul>
+    
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-box-open"></i> <strong>Data Produk</strong></div>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>1. <strong>Kopi Arabika (x):</strong> Membutuhkan 3 jam roasting, 1 jam packaging, keuntungan Rp300.000/batch.</li>
+        <li>2. <strong>Kopi Robusta (y):</strong> Membutuhkan 1 jam roasting, 1 jam packaging, keuntungan Rp200.000/batch.</li>
+    </ul>
+
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-calculator"></i> <strong>Model Matematika</strong></div>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>1. <strong>3x + y &le; 90</strong> (Kendala Mesin Roasting)</li>
+        <li>2. <strong>x + y &le; 40</strong> (Kendala Mesin Packaging)</li>
+        <li>3. <strong>x &ge; 0 ; y &ge; 0</strong> (Kendala Non-Negatif)</li>
+    </ul>
+
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-bullseye"></i> <strong>Fungsi Tujuan</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444">
+        <strong>Z = 300.000x + 200.000y</strong>
+    </p>
+</div>
+
+<!-- Pembahasan Lengkap -->
+<div class="card">
+    <div class="card-title"><i class="fas fa-graduation-cap"></i> <strong>Pembahasan Lengkap dan Langkah Penyelesaian</strong></div>
+    <ol style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li><strong>⚫️Membentuk Model Matematika:</strong> Mengubah narasi bisnis menjadi batasan variabel matematika sesuai poin kendala di atas.</li>
+        <li><strong>⚫️Menggambar Grafik:</strong> Membuat garis linear untuk persamaan <em>3x + y = 90</em> dan <em>x + y = 40</em> pada bidang koordinat.</li>
+        <li><strong>⚫️Menentukan Daerah Penyelesaian:</strong> Mengarsir daerah di bawah garis yang memenuhi semua kondisi pertidaksamaan.</li>
+        <li><strong>⚫️Menentukan Titik Pojok:</strong> Menemukan kandidat koordinat sudut luar daerah penyelesaian, yaitu: (0,0), (0,40), titik potong garis, dan (30,0).</li>
+        <li><strong>⚫️Menentukan Titik Potong dengan Metode Eliminasi:</strong> 
+            <br>3x + y = 90 
+            <br>x + y = 40 
+            <br><span>─────────</span> - 
+            <br>2x = 50 &rarr; <strong>x = 25</strong>. 
+            <br>Substitusi ke persamaan kedua: 25 + y = 40 &rarr; <strong>y = 15</strong>. Jadi, titik potong berada di <strong>(25, 15)</strong>.
+        </li>
+        <li><strong>⚫️Menghitung Keuntungan Maksimum:</strong>
+            <br>• Titik (0, 0) &rarr; Z = 0
+            <br>• Titik (0, 40) &rarr; Z = Rp8.000.000
+            <br>• Titik (30, 0) &rarr; Z = Rp9.000.000
+            <br>• Titik (25, 15) &rarr; Z = 300.000(25) + 200.000(15) = <strong>Rp10.500.000</strong> (Maksimum).
+        </li>
+    </ol>
+</div>
+
+
+        <div class="teori-grid">
+            <div class="card"><div class="card-title"><i class="fas fa-draw-polygon"></i> Metode Grafik</div><p style="font-size:.85rem;color:var(--muted);line-height:1.7">Setiap pertidaksamaan ax + by &le; c digambarkan sebagai garis ax + by = c, lalu daerah yang memenuhi diarsir. Irisan semua daerah arsiran membentuk <strong>daerah fisibel</strong>.</p></div>
+            <div class="card"><div class="card-title"><i class="fas fa-map-pin"></i> Metode Titik Pojok</div><p style="font-size:.85rem;color:var(--muted);line-height:1.7">Nilai optimum fungsi tujuan linear <strong>selalu di salah satu titik pojok</strong> daerah fisibel. Hitung Z di setiap titik pojok, lalu pilih yang terbesar.</p></div>
+            <div class="card"><div class="card-title"><i class="fas fa-hashtag"></i> Bilangan Bulat</div><p style="font-size:.85rem;color:var(--muted);line-height:1.7">Dalam konteks nyata (jumlah cup tidak bisa desimal), kita perlu memastikan titik optimum berupa <strong>bilangan bulat</strong>. Batasan (c) harus dipilih agar semua perpotongan garis menghasilkan bilangan bulat.</p></div>
+        </div>
+    </div>
+
+    <!-- PROSEDUR -->
+    <div class="tab-panel" id="panel-prosedur">
+
+<!-- Problem Solving & Computational Thinking -->
+<div class="card">
+    <div class="card-title"><i class="fas fa-brain"></i> <strong>Problem Solving Kasus Bisnis: Optimasi Kedai Kopi</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444">
+        Kedai kopi memproduksi <strong>Espresso</strong> dan <strong>Cappuccino</strong>. Sebagai seorang <em>Business Analyst</em>, ikuti langkah berpikir komputasional (<em>Computational Thinking</em>) berikut untuk menentukan keuntungan maksimum.
+    </p>
+</div>
+
+<!-- Langkah Kerja Menyelesaikan SPtLDV -->
+<div class="card">
+    <div class="card-title"><i class="fas fa-tasks"></i> <strong>Langkah Kerja Menyelesaikan SPtLDV</strong></div>
+    
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-fingerprint"></i> <strong>Langkah 1 — Identifikasi Variabel Keputusan</strong></div>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>• <strong>x:</strong> Jumlah Espresso (cup/hari)</li>
+        <li>• <strong>y:</strong> Jumlah Cappuccino (cup/hari)</li>
+    </ul>
+
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-calculator"></i> <strong>Langkah 2 — Susun Model Matematika</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444; margin-bottom: 5px;"><strong>Contoh:</strong></p>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>1. <strong>15x + 20y &le; 600</strong></li>
+        <li>2. <strong>150x + 30y &le; 3000</strong></li>
+        <li>3. <strong>4x + 3y &le; 480</strong></li>
+        <li>4. <strong>x &ge; 0</strong></li>
+        <li>5. <strong>y &ge; 0</strong></li>
+    </ul>
+
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-chart-line"></i> <strong>Langkah 3 — Gambar Grafik Tiap Garis Batas</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444; margin-bottom: 5px;"><strong>Contoh persamaan garis 15x + 20y = 600:</strong></p>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>• <strong>Titik potong sumbu X:</strong> (40, 0)</li>
+        <li>• <strong>Titik potong sumbu Y:</strong> (0, 30)</li>
+    </ul>
+
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-layer-group"></i> <strong>Langkah 4 — Tentukan Daerah Penyelesaian</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444">
+        <strong>Daerah penyelesaian</strong> merupakan irisan seluruh daerah yang memenuhi semua kendala pertidaksamaan di atas.
+    </p>
+
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-draw-polygon"></i> <strong>Langkah 5 — Tentukan Titik-Titik Pojok</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444; margin-bottom: 5px;"><strong>Contoh koordinat kandidat solusi:</strong></p>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>1. <strong>Titik A:</strong> (0, 0)</li>
+        <li>2. <strong>Titik B:</strong> (40, 0)</li>
+        <li>3. <strong>Titik C (Perpotongan):</strong> (24, 12)</li>
+        <li>4. <strong>Titik D:</strong> (0, 30)</li>
+    </ul>
+
+    <div class="card-title" style="font-size: 1rem; margin-top: 15px;"><i class="fas fa-bullseye"></i> <strong>Langkah 6 — Uji Fungsi Tujuan</strong></div>
+    <p style="line-height:1.8; font-size:.92rem; color:#444; margin-bottom: 5px;"><strong>Contoh fungsi laba: Z = 8000x + 6000y</strong></p>
+    <ul style="line-height:1.8; font-size:.92rem; color:#444; padding-left: 20px;">
+        <li>• <strong>Hasil pengujian titik optimum C:</strong> Z(24, 12) = 8000(24) + 6000(12) = <strong>264.000</strong></li>
+    </ul>
+    <p style="line-height:1.8; font-size:.92rem; color:#444; margin-top: 5px;">
+        Nilai maksimum keuntungan bisnis ini diperoleh tepat pada <strong>titik optimum</strong> tersebut.
+    </p>
+</div>
+
+
+        <div class="card" style="background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border-color:#FFB74D">
+            <div class="card-title"><i class="fas fa-info-circle" style="color:#E65100"></i> Cara Menggunakan Simulasi</div>
+            <ol style="font-size:.88rem;color:#5D4037;line-height:2;padding-left:20px">
+                <li>Baca tabel kebutuhan per cup.</li>
+                <li>Isi koefisien (a dan b) setiap kendala.</li>
+                <li>Gunakan slider untuk mengatur batas harian — <strong>perhatikan indikator bilangan bulat!</strong></li>
+                <li>Tuliskan prediksi x dan y optimum.</li>
+                <li>Klik <strong>"Jalankan Simulasi"</strong> dan pelajari penjelasannya.</li>
+            </ol>
+        </div>
+<div class="card" style="background:linear-gradient(135deg,#E3F2FD,#BBDEFB);border-color:#64B5F6">
+            <div class="card-title" style="color:#1565C0"><i class="fas fa-hashtag"></i> Mengapa x dan y Harus Bulat?</div>
+            <p style="font-size:.88rem;line-height:1.8;color:#0D47A1">Jumlah cup kopi tidak bisa berupa bilangan desimal — Anda tidak bisa membuat 42.5 cup Espresso! Oleh karena itu, nilai batas (slider) harus dipilih dengan cermat agar semua titik perpotongan garis kendala menghasilkan <strong>bilangan bulat</strong>. Jika hasil perpotongan desimal, geser slider ke nilai terdekat yang menghasilkan bilangan bulat.</p>
+        </div>
+    </div>
+
+
+
+    <!-- SIMULASI -->
+    <div class="tab-panel" id="panel-simulasi">
+        <div class="card" style="border-left:4px solid var(--accent)">
+            <div class="card-title"><i class="fas fa-mug-hot"></i> Studi Kasus: Kedai Kopi Nusantara</div>
+            <div style="font-size:.9rem;line-height:1.8;color:#444">
+                <p>Kedai <strong>Kopi Nusantara</strong> memproduksi dua menu andalan per hari. Berikut kebutuhan sumber daya <strong>per cup</strong>:</p>
+                <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:.85rem">
+                    <thead><tr style="background:var(--dark2);color:var(--gold)">
+                        <th style="padding:8px 12px;text-align:left;border-radius:8px 0 0 0">Menu</th>
+                        <th style="padding:8px 12px;text-align:center">Modal/Cup</th>
+                        <th style="padding:8px 12px;text-align:center">Waktu/Cup</th>
+                        <th style="padding:8px 12px;text-align:center">Kopi/Cup</th>
+                        <th style="padding:8px 12px;text-align:center;border-radius:0 8px 0 0">Keuntungan/Cup</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr style="background:var(--bg)"><td style="padding:8px 12px;font-weight:600">Espresso (<em>x</em>)</td><td style="padding:8px;text-align:center">Rp200.000</td><td style="padding:8px;text-align:center">1 menit</td><td style="padding:8px;text-align:center">10 gram</td><td style="padding:8px;text-align:center;font-weight:700;color:var(--success)">Rp15.000</td></tr>
+                        <tr><td style="padding:8px 12px;font-weight:600">Cappuccino (<em>y</em>)</td><td style="padding:8px;text-align:center">Rp100.000</td><td style="padding:8px;text-align:center">3 menit</td><td style="padding:8px;text-align:center">10 gram</td><td style="padding:8px;text-align:center;font-weight:700;color:var(--success)">Rp20.000</td></tr>
+                    </tbody>
+                </table>
+                <p><i class="fas fa-sliders-h" style="color:var(--accent)"></i> Atur <strong>batas harian</strong> melalui slider. Pastikan indikator menunjukkan <span style="color:var(--success);font-weight:700">bilangan bulat</span> sebelum menjalankan simulasi!</p>
+            </div>
+        </div>
+
+                <div class="card">
+                    <div class="card-title" style="font-size:1rem"><i class="fas fa-lock"></i> Kendala Pertidaksamaan</div>
+
+                    <div class="constraint-block">
+                        <div class="cb-title"><i class="fas fa-wallet"></i> Kendala 1 — Modal (ratusan ribu)</div>
+                        <div class="input-row" style="margin-bottom:6px">
+                            <input type="number" class="input-field" id="c1a" placeholder="a"><span>x +</span>
+                            <input type="number" class="input-field" id="c1b" placeholder="b"><span>y &le;</span>
+                            <span class="slider-val" id="c1v">120</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <span style="font-size:.7rem;color:var(--muted)">60</span>
+                            <input type="range" min="60" max="300" step="1" value="120" id="c1s" oninput="onSlider(1)">
+                            <span style="font-size:.7rem;color:var(--muted)">300</span>
+                        </div>
+                        <div class="slider-hint">Geser untuk atur batas modal harian (ratusan ribu rupiah)</div>
+                        <div class="fb" id="fb1"></div>
+                    </div>
+
+                    <div class="constraint-block">
+                        <div class="cb-title"><i class="fas fa-clock"></i> Kendala 2 — Waktu (menit)</div>
+                        <div class="input-row" style="margin-bottom:6px">
+                            <input type="number" class="input-field" id="c2a" placeholder="a"><span>x +</span>
+                            <input type="number" class="input-field" id="c2b" placeholder="b"><span>y &le;</span>
+                            <span class="slider-val" id="c2v">150</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <span style="font-size:.7rem;color:var(--muted)">60</span>
+                            <input type="range" min="60" max="300" step="1" value="150" id="c2s" oninput="onSlider(2)">
+                            <span style="font-size:.7rem;color:var(--muted)">300</span>
+                        </div>
+                        <div class="slider-hint">Geser untuk atur batas waktu produksi harian (menit)</div>
+                        <div class="fb" id="fb2"></div>
+                    </div>
+
+                    <div class="constraint-block">
+                        <div class="cb-title"><i class="fas fa-seedling"></i> Kendala 3 — Bahan Baku (puluh gram)</div>
+                        <div class="input-row" style="margin-bottom:6px">
+                            <input type="number" class="input-field" id="c3a" placeholder="a"><span>x +</span>
+                            <input type="number" class="input-field" id="c3b" placeholder="b"><span>y &le;</span>
+                            <span class="slider-val" id="c3v">100</span>
+                        </div>
+                        <div class="slider-wrap">
+                            <span style="font-size:.7rem;color:var(--muted)">40</span>
+                            <input type="range" min="40" max="150" step="1" value="100" id="c3s" oninput="onSlider(3)">
+                            <span style="font-size:.7rem;color:var(--muted)">150</span>
+                        </div>
+                        <div class="slider-hint">Geser untuk atur batas stok kopi harian (puluh gram)</div>
+                        <div class="fb" id="fb3"></div>
+                    </div>
+
+        <div class="sim-grid">
+            <div>
+                <div class="card">
+                    <div class="card-title" style="font-size:1rem"><i class="fas fa-bullseye"></i> Fungsi Tujuan</div>
+                    <div class="input-group"><label>P = keuntungan (ribuan rupiah)</label>
+                        <div class="input-row"><span>P =</span><input type="number" class="input-field" id="obj_a" value="15"><span>x +</span><input type="number" class="input-field" id="obj_b" value="20"><span>y</span></div>
+                    </div>
+                </div>
+
+
+                    <!-- INDIKATOR BILANGAN BULAT -->
+                    <div id="intIndicator" class="int-indicator wait">
+                        <i class="fas fa-hourglass-half"></i>
+                        <div id="intText">Isi koefisien ketiga kendala terlebih dahulu untuk mengecek bilangan bulat.</div>
+                    </div>
+
+                    <div style="display:flex;gap:8px;margin-top:12px">
+                        <button class="btn btn-outline btn-sm" onclick="checkCoeffs()"><i class="fas fa-check-circle"></i> Cek Koefisien</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetSim()"><i class="fas fa-redo"></i> Reset</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="font-size:1rem"><i class="fas fa-lightbulb"></i> Prediksi Saya</div>
+                    <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Estimasi nilai x dan y yang memberikan keuntungan maksimum.</p>
+                    <div class="input-group"><label>Prediksi x optimum (Espresso)</label><input type="number" class="input-field" id="predX" placeholder="?" style="width:100%"></div>
+                    <div class="input-group"><label>Prediksi y optimum (Cappuccino)</label><input type="number" class="input-field" id="predY" placeholder="?" style="width:100%"></div>
+                    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" id="btnSim" onclick="runSimulation()"><i class="fas fa-play"></i> Jalankan Simulasi</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="canvas-wrap"><canvas id="graphCanvas" width="600" height="480"></canvas></div>
+                <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:.75rem;color:var(--muted)">
+                    <span><span style="display:inline-block;width:24px;height:3px;background:#E53935;border-radius:2px;vertical-align:middle;margin-right:4px"></span>Modal</span>
+                    <span><span style="display:inline-block;width:24px;height:3px;background:#1E88E5;border-radius:2px;vertical-align:middle;margin-right:4px"></span>Waktu</span>
+                    <span><span style="display:inline-block;width:24px;height:3px;background:#43A047;border-radius:2px;vertical-align:middle;margin-right:4px"></span>Bahan</span>
+                    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(212,160,83,.3);border:1px solid var(--accent);border-radius:2px;vertical-align:middle;margin-right:4px"></span>Fisibel</span>
+                    <span><span style="display:inline-block;width:10px;height:10px;background:var(--success);border-radius:50%;vertical-align:middle;margin-right:4px"></span>Optimum</span>
+                    <span><span style="display:inline-block;width:10px;height:10px;background:#E65100;border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.3);vertical-align:middle;margin-right:4px"></span>Prediksi</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- HASIL -->
+        <div id="resultsArea" style="display:none;margin-top:20px">
+            <div class="card" style="border-left:4px solid var(--success)">
+                <div class="card-title"><i class="fas fa-chart-bar"></i> Perbandingan Prediksi vs Simulasi</div>
+                <div class="result-grid">
+                    <div class="result-card pred"><h4>Prediksi Anda</h4><div class="val" id="resPred">—</div><div style="font-size:.8rem;color:var(--muted);margin-top:4px" id="resPredP">P = —</div></div>
+                    <div class="result-card sim"><h4>Hasil Simulasi</h4><div class="val" id="resSim">—</div><div style="font-size:.8rem;color:var(--muted);margin-top:4px" id="resSimP">P = —</div></div>
+                    <div class="result-card diff"><h4>Selisih</h4><div class="val" id="resDiff">—</div><div style="font-size:.8rem;color:var(--muted);margin-top:4px" id="resDiffP">&Delta;P = —</div></div>
+                </div>
+                <div style="text-align:center;margin-bottom:12px"><div class="stars" id="starsContainer"></div><div style="font-size:.8rem;color:var(--muted)" id="starsText"></div></div>
+                <div style="margin:16px 0"><h4 style="font-size:.9rem;font-weight:700;color:var(--dark2);margin-bottom:8px"><i class="fas fa-table" style="color:var(--accent)"></i> Evaluasi di Setiap Titik Pojok</h4>
+                    <div style="overflow-x:auto"><table class="corner-table"><thead><tr><th>Titik</th><th>x</th><th>y</th><th>P = 15x + 20y</th><th>Keterangan</th></tr></thead><tbody id="cornerBody"></tbody></table></div>
+                </div>
+            </div>
+            <div class="card" id="howtoCard" style="border-left:4px solid #1565C0"><div class="howto-box" id="howtoContent"></div></div>
+            <div class="card" style="border-left:4px solid var(--accent)"><div class="explanation" id="explanationBox"></div></div>
+        </div>
+    </div>
+
+    <!-- LKPD -->
+    <div class="tab-panel" id="panel-lkpd">
+        <div class="card" style="border-left:4px solid var(--accent)">
+            <div class="card-title"><i class="fas fa-pen-fancy"></i> Lembar Kerja Peserta Didik</div>
+            <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px">Jawablah pertanyaan berikut.</p>
+            <div class="lkpd-q"><h4>1. Identifikasi Variabel Keputusan</h4><p style="font-size:.83rem;color:var(--muted);margin-bottom:6px">Apa yang diwakili variabel x dan y?</p><textarea id="lkpd1" placeholder="Tulis jawaban..."></textarea><div class="fb" id="lkpdFb1"></div></div>
+            <div class="lkpd-q"><h4>2. Fungsi Tujuan</h4><p style="font-size:.83rem;color:var(--muted);margin-bottom:6px">Tuliskan fungsi tujuan dan jelaskan makna koefisiennya.</p><textarea id="lkpd2" placeholder="Tulis jawaban..."></textarea><div class="fb" id="lkpdFb2"></div></div>
+            <div class="lkpd-q"><h4>3. Kendala-Kendala</h4><p style="font-size:.83rem;color:var(--muted);margin-bottom:6px">Nyatakan ketiga kendala dalam pertidaksamaan. Jelaskan asal koefisiennya.</p><textarea id="lkpd3" placeholder="Tulis jawaban..." style="min-height:100px"></textarea><div class="fb" id="lkpdFb3"></div></div>
+            <div class="lkpd-q"><h4>4. Cara Menentukan Titik Pojok</h4><p style="font-size:.83rem;color:var(--muted);margin-bottom:6px">Jelaskan langkah menentukan titik pojok daerah fisibel.</p><textarea id="lkpd4" placeholder="Tulis jawaban..." style="min-height:100px"></textarea><div class="fb" id="lkpdFb4"></div></div>
+            <div class="lkpd-q"><h4>5. Pentingnya Bilangan Bulat</h4><p style="font-size:.83rem;color:var(--muted);margin-bottom:6px">Mengapa x dan y harus bulat? Apa yang terjadi pada slider jika nilai tidak bulat?</p><textarea id="lkpd5" placeholder="Tulis jawaban..." style="min-height:80px"></textarea><div class="fb" id="lkpdFb5"></div></div>
+            <div class="lkpd-q"><h4>6. Rekomendasi Bisnis</h4><p style="font-size:.83rem;color:var(--muted);margin-bottom:6px">Berikan rekomendasi kepada pemilik kedai.</p><textarea id="lkpd6" placeholder="Tulis jawaban..." style="min-height:80px"></textarea><div class="fb" id="lkpdFb6"></div></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-primary" onclick="checkLKPD()"><i class="fas fa-check-double"></i> Periksa Jawaban</button>
+                <button class="btn btn-outline" onclick="clearLKPD()"><i class="fas fa-eraser"></i> Hapus Semua</button>
+            </div>
+            <div id="lkpdScore" style="margin-top:16px;display:none"></div>
+        </div>
+    </div>
+
+    <!-- PENGEMBANG -->
+    <div class="tab-panel" id="panel-pengembang">
+        <div class="dev-card card">
+<img src="assets/images/foto_idvan.jpg" alt="Idvan Aprizal Bintara" onerror="this.onerror=null;this.src='assets/images/profil.png';" style="display: block; margin-left: auto; margin-right: auto; max-width: 100%; height: auto;">
+            <h3>Idvan Aprizal Bintara</h3>
+            <div class="role">Pengembang Laboratorium Maya Matematika</div>
+            <p style="font-size:.88rem;color:var(--muted);line-height:1.7;margin-top:12px">Laboratorium ini dikembangkan sebagai media pembelajaran interaktif untuk mata pelajaran Matematika Fase E, elemen Aljabar dan Fungsi, materi SPtLDV. Didesain dengan pendekatan <strong>Problem Based Learning</strong> dan <strong>Computational Thinking</strong>.</p>
+            <div style="margin-top:20px"><h4 style="font-size:.85rem;font-weight:700;color:var(--dark2);margin-bottom:10px">Teknologi</h4><div class="tech-tags"><span class="tech-tag">HTML5</span><span class="tech-tag">CSS3</span><span class="tech-tag">JavaScript</span><span class="tech-tag">Canvas API</span><span class="tech-tag">Web Audio API</span><span class="tech-tag">Tailwind CSS</span></div></div>
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)"><p style="font-size:.75rem;color:var(--muted)">Coffee Business Lab v1.0 &copy; 2025</p></div>
+        </div>
+    </div>
+
+    <footer class="app-footer">Coffee Business Lab &mdash; Laboratorium Maya Matematika Interaktif &mdash; SPtLDV &mdash; Fase E</footer>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+// =====================================================
+// AUDIO
+// =====================================================
+const SFX={
+    ctx:null,on:true,
+    init(){try{this.ctx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}},
+    tone(f,d,t='sine',v=.2){if(!this.ctx||!this.on)return;if(this.ctx.state==='suspended')this.ctx.resume();const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,this.ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+d);o.connect(g);g.connect(this.ctx.destination);o.start();o.stop(this.ctx.currentTime+d)},
+    click(){this.tone(880,.08,'sine',.12)},
+    ok(){this.tone(523,.12);setTimeout(()=>this.tone(659,.12),120);setTimeout(()=>this.tone(784,.25),240)},
+    err(){this.tone(220,.25,'sawtooth',.12)},
+    start(){this.tone(440,.15);setTimeout(()=>this.tone(554,.15),150);setTimeout(()=>this.tone(659,.15),300);setTimeout(()=>this.tone(880,.3),450)},
+    done(){[523,587,659,784,880,1047].forEach((f,i)=>setTimeout(()=>this.tone(f,.18,'sine',.16),i*90))},
+    chk(){this.tone(660,.1)}
+};
+function toggleSound(){SFX.on=!SFX.on;document.querySelector('#soundBtn i').className=SFX.on?'fas fa-volume-high':'fas fa-volume-xmark';SFX.click()}
+
+// =====================================================
+// STATE
+// =====================================================
+let pts=0;
+function addPts(n){pts+=n;document.getElementById('ptsVal').textContent=pts;const b=document.getElementById('ptsBadge');b.style.transform='scale(1.15)';setTimeout(()=>b.style.transform='scale(1)',200)}
+function toast(m,t='info'){const c=document.getElementById('toasts'),e=document.createElement('div');e.className='toast '+t;e.innerHTML=m;c.appendChild(e);setTimeout(()=>{e.classList.add('out');setTimeout(()=>e.remove(),300)},3200)}
+
+// =====================================================
+// SPLASH
+// =====================================================
+function initSplash(){
+    const bar=document.getElementById('splashBar'),fill=document.getElementById('cupFill'),pct=document.getElementById('splashPct'),btn=document.getElementById('btnStart');
+    const s=[{p:15,t:'Memuat modul teori...'},{p:35,t:'Menyiapkan mesin grafik...'},{p:55,t:'Menginisialisasi simulasi...'},{p:75,t:'Memuat Lembar Kerja...'},{p:90,t:'Hampir selesai...'},{p:100,t:'Siap!'}];
+    let i=0;const iv=setInterval(()=>{if(i>=s.length){clearInterval(iv);btn.classList.add('show');return}bar.style.width=s[i].p+'%';fill.style.height=s[i].p+'%';pct.textContent=s[i].t;i++},450)
+}
+function startApp(){SFX.init();SFX.start();document.getElementById('splash').classList.add('hidden');setTimeout(()=>{document.getElementById('app').classList.add('show');drawEmpty()},400)}
+
+// =====================================================
+// TABS
+// =====================================================
+function switchTab(id){SFX.click();const ids=['teori','prosedur','simulasi','lkpd','pengembang'];document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',ids[i]===id)});document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById('panel-'+id).classList.add('active');if(id==='simulasi')drawEmpty()}
+
+// =====================================================
+// SLIDER + VALIDASI BILANGAN BULAT
+// =====================================================
+const SLIDER_RANGE = {
+    1: {min:60,max:300},
+    2: {min:60,max:300},
+    3: {min:40,max:150}
+};
+
+function onSlider(n){
+    document.getElementById('c'+n+'v').textContent=document.getElementById('c'+n+'s').value;
+    SFX.chk();
+    validateInteger();
+}
+
+// Cek apakah semua koefisien sudah diisi
+function allCoeffsFilled(){
+    for(let i=1;i<=3;i++){
+        const a=document.getElementById('c'+i+'a').value;
+        const b=document.getElementById('c'+i+'b').value;
+        if(a===''||b==='')return false;
+    }
+    return true;
+}
+
+// Ambil constraint dari input saat ini
+function getCsFromInput(){
+    return [
+        {a:parseFloat(document.getElementById('c1a').value)||0,b:parseFloat(document.getElementById('c1b').value)||0,c:parseInt(document.getElementById('c1s').value)},
+        {a:parseFloat(document.getElementById('c2a').value)||0,b:parseFloat(document.getElementById('c2b').value)||0,c:parseInt(document.getElementById('c2s').value)},
+        {a:parseFloat(document.getElementById('c3a').value)||0,b:parseFloat(document.getElementById('c3b').value)||0,c:parseInt(document.getElementById('c3s').value)}
+    ];
+}
+
+// Hitung perpotongan dua garis
+function ix(l1,l2){const d=l1.a*l2.b-l1.b*l2.a;if(Math.abs(d)<1e-10)return null;return{x:(l1.c*l2.b-l1.b*l2.c)/d,y:(l1.a*l2.c-l1.c*l2.a)/d}}
+
+// Cek apakah titik bilangan bulat (toleransi kecil)
+function isInt(v){return Math.abs(v-Math.round(v))<0.001}
+
+// Cek apakah nilai dalam range slider
+function inRange(n){return n>=SLIDER_RANGE[n].min&&n<=SLIDER_RANGE[n].max}
+
+// Validasi: apakah semua perpotongan garis menghasilkan bilangan bulat?
+function validateInteger(){
+    const ind=document.getElementById('intIndicator');
+    const txt=document.getElementById('intText');
+
+    if(!allCoeffsFilled()){
+        ind.className='int-indicator wait';
+        ind.innerHTML='<i class="fas fa-hourglass-half"></i><div>Isi koefisien ketiga kendala terlebih dahulu untuk mengecek bilangan bulat.</div>';
+        return;
+    }
+
+    const cs=getCsFromInput();
+    const lines=[...cs,{a:1,b:0,c:0},{a:0,b:1,c:0}];
+    const labels=[...['Kendala 1','Kendala 2','Kendala 3'],'x = 0','y = 0'];
+    const bad=[];
+
+    for(let i=0;i<lines.length;i++){
+        for(let j=i+1;j<lines.length;j++){
+            const p=ix(lines[i],lines[j]);
+            if(!p||!isFinite(p.x)||!isFinite(p.y))continue;
+            if(p.x<-0.01||p.y<-0.01)continue;
+            if(!isInt(p.x)||!isInt(p.y)){
+                bad.push({x:Math.round(p.x*100)/100,y:Math.round(p.y*100)/100,l1:labels[i],l2:labels[j]});
+            }
+        }
+    }
+
+    if(bad.length===0){
+        ind.className='int-indicator ok';
+        ind.innerHTML='<i class="fas fa-check-circle"></i><div><strong>Semua titik pojok bilangan bulat.</strong> Aman untuk simulasi!</div>';
+    } else {
+        // Cari snap terdekat
+        const snap=findSnap(cs);
+        let snapBtn='';
+        if(snap){
+            snapBtn=' <button class="btn-snap" onclick="applySnap(['+snap.join(',')+'])"><i class="fas fa-magnet"></i> Snap ke Bulat Terdekat</button>';
+        }
+        let detail=bad.map(b=>'<code>'+b.l1+' ∩ '+b.l2+' = ('+b.x+', '+b.y+')</code>').join('<br>');
+        ind.className='int-indicator bad';
+        ind.innerHTML='<i class="fas fa-exclamation-triangle"></i><div><strong>Perhatian!</strong> Ada titik pojok yang bukan bilangan bulat:<br>'+detail+'<br>Jumlah cup tidak bisa desimal.'+snapBtn+'</div>';
+    }
+}
+
+// Cari kombinasi slider terdekat (±15) yang menghasilkan semua perpotongan bulat
+function findSnap(cs){
+    const bases=[cs[0].c,cs[1].c,cs[2].c];
+    let best=null, bestDist=Infinity;
+
+    for(let d0=-15;d0<=15;d0++){
+        const v0=bases[0]+d0;
+        if(v0<SLIDER_RANGE[1].min||v0>SLIDER_RANGE[1].max)continue;
+        for(let d1=-15;d1<=15;d1++){
+            const v1=bases[1]+d1;
+            if(v1<SLIDER_RANGE[2].min||v1>SLIDER_RANGE[2].max)continue;
+            for(let d2=-15;d2<=15;d2++){
+                const v2=bases[2]+d2;
+                if(v2<SLIDER_RANGE[3].min||v2>SLIDER_RANGE[3].max)continue;
+                const dist=Math.abs(d0)+Math.abs(d1)+Math.abs(d2);
+                if(dist===0)continue;
+                if(dist>=bestDist)continue;
+
+                const test=[
+                    {a:cs[0].a,b:cs[0].b,c:v0},
+                    {a:cs[1].a,b:cs[1].b,c:v1},
+                    {a:cs[2].a,b:cs[2].b,c:v2}
+                ];
+                const lines=[...test,{a:1,b:0,c:0},{a:0,b:1,c:0}];
+                let allOk=true;
+                for(let i=0;i<lines.length&&allOk;i++){
+                    for(let j=i+1;j<lines.length&&allOk;j++){
+                        const p=ix(lines[i],lines[j]);
+                        if(!p||!isFinite(p.x)||!isFinite(p.y))continue;
+                        if(p.x<-0.01||p.y<-0.01)continue;
+                        if(!isInt(p.x)||!isInt(p.y))allOk=false;
+                    }
+                }
+                if(allOk){bestDist=dist;best=[v0,v1,v2]}
+            }
+        }
+    }
+    return best;
+}
+
+// Terapkan snap ke slider
+function applySnap(vals){
+    SFX.ok();
+    document.getElementById('c1s').value=vals[0];document.getElementById('c1v').textContent=vals[0];
+    document.getElementById('c2s').value=vals[1];document.getElementById('c2v').textContent=vals[1];
+    document.getElementById('c3s').value=vals[2];document.getElementById('c3v').textContent=vals[2];
+    validateInteger();
+    toast('<i class="fas fa-magnet"></i> Slider disesuaikan ke nilai bilangan bulat terdekat','success');
+}
+
+// =====================================================
+// KOEFISIEN CHECK
+// =====================================================
+const CORR={obj:{a:15,b:20},c:[{a:2,b:1,l:'Modal'},{a:1,b:3,l:'Waktu'},{a:1,b:1,l:'Bahan Baku'}]};
+function checkCoeffs(){
+    SFX.chk();let ok=true,p=0;
+    const oa=parseFloat(document.getElementById('obj_a').value),ob=parseFloat(document.getElementById('obj_b').value);
+    const oaOk=oa===CORR.obj.a,obOk=ob===CORR.obj.b;
+    document.getElementById('obj_a').classList.toggle('correct',oaOk);document.getElementById('obj_a').classList.toggle('wrong',!oaOk);
+    document.getElementById('obj_b').classList.toggle('correct',obOk);document.getElementById('obj_b').classList.toggle('wrong',!obOk);
+    if(oaOk&&obOk)p+=30;else ok=false;
+    for(let i=1;i<=3;i++){
+        const a=parseFloat(document.getElementById('c'+i+'a').value),b=parseFloat(document.getElementById('c'+i+'b').value);
+        const aOk=a===CORR.c[i-1].a,bOk=b===CORR.c[i-1].b;
+        document.getElementById('c'+i+'a').classList.toggle('correct',aOk);document.getElementById('c'+i+'a').classList.toggle('wrong',!aOk);
+        document.getElementById('c'+i+'b').classList.toggle('correct',bOk);document.getElementById('c'+i+'b').classList.toggle('wrong',!bOk);
+        const fb=document.getElementById('fb'+i);
+        if(aOk&&bOk){fb.innerHTML='<span style="color:var(--success)"><i class="fas fa-check-circle"></i> Koefisien '+CORR.c[i-1].l+' benar!</span>';p+=20}
+        else{ok=false;let h='<span style="color:var(--error)"><i class="fas fa-times-circle"></i> ';h+=(!aOk&&!bOk)?'Koefisien a dan b salah.':(!aOk)?'Koefisien a salah.':'Koefisien b salah.';h+=' Cek kebutuhan per cup dari tabel.</span>';fb.innerHTML=h}
+    }
+    if(ok){toast('<i class="fas fa-trophy"></i> Semua koefisien benar! +80 poin','success');SFX.ok()}else toast('Beberapa koefisien perlu diperbaiki.','warning');
+    addPts(p);
+    validateInteger();
+}
+
+// =====================================================
+// RESET
+// =====================================================
+function resetSim(){
+    SFX.click();
+    ['obj_a','obj_b','c1a','c1b','c2a','c2b','c3a','c3b','predX','predY'].forEach(id=>{const e=document.getElementById(id);e.value=(id==='obj_a'?'15':id==='obj_b'?'20':'');e.classList.remove('correct','wrong')});
+    ['fb1','fb2','fb3'].forEach(id=>document.getElementById(id).innerHTML='');
+    document.getElementById('c1s').value=120;document.getElementById('c1v').textContent='120';
+    document.getElementById('c2s').value=150;document.getElementById('c2v').textContent='150';
+    document.getElementById('c3s').value=100;document.getElementById('c3v').textContent='100';
+    document.getElementById('resultsArea').style.display='none';drawEmpty();validateInteger();
+    toast('<i class="fas fa-redo"></i> Simulasi direset','info')
+}
+
+// =====================================================
+// SIMULATION ENGINE
+// =====================================================
+function getC(){return getCsFromInput().map((c,i)=>({...c,l:['Modal','Waktu','Bahan'][i],col:['#E53935','#1E88E5','#43A047'][i]}))}
+function getObj(){return{a:parseFloat(document.getElementById('obj_a').value)||0,b:parseFloat(document.getElementById('obj_b').value)||0}}
+
+function feasible(p,cs){if(p.x<-1e-9||p.y<-1e-9)return false;for(const c of cs)if(c.a*p.x+c.b*p.y>c.c+1e-9)return false;return true}
+
+function findCorners(cs){
+    const ls=[...cs,{a:1,b:0,c:0,l:'x=0'},{a:0,b:1,c:0,l:'y=0'}];
+    const pts=[],seen=new Set();
+    for(let i=0;i<ls.length;i++)for(let j=i+1;j<ls.length;j++){
+        const p=ix(ls[i],ls[j]);if(!p||!isFinite(p.x)||!isFinite(p.y)||p.x<-.5||p.y<-.5)continue;
+        const k=Math.round(p.x*100)+','+Math.round(p.y*100);if(seen.has(k))continue;seen.add(k);
+        if(feasible(p,cs))pts.push({x:Math.round(p.x*100)/100,y:Math.round(p.y*100)/100,from:ls[i].l+' ∩ '+ls[j].l})
+    }
+    return pts
+}
+function sortPoly(pts){if(pts.length<3)return pts;const cx=pts.reduce((s,p)=>s+p.x,0)/pts.length,cy=pts.reduce((s,p)=>s+p.y,0)/pts.length;return[...pts].sort((a,b)=>Math.atan2(a.y-cy,a.x-cx)-Math.atan2(b.y-cy,b.x-cx))}
+
+// =====================================================
+// BUILD HOW-TO
+// =====================================================
+function buildHowTo(cs,obj,corners,opt){
+    const c1=cs[0],c2=cs[1],c3=cs[2];
+    let h='<h3><i class="fas fa-graduation-cap"></i> Cara Menentukan Nilai x dan y yang Benar</h3>';
+    h+='<p style="font-size:.85rem;color:var(--muted);margin-bottom:16px">Langkah demi langkah menemukan titik optimum <strong>('+opt.x+', '+opt.y+')</strong>.</p>';
+
+    h+='<div class="howto-step"><div class="howto-num">1</div><div><p><strong>Ubah pertidaksamaan menjadi persamaan</strong></p>';
+    h+='<div class="math-line">'+c1.a+'x + '+c1.b+'y = '+c1.c+' <span class="dim">(Modal)</span></div>';
+    h+='<div class="math-line">'+c2.a+'x + '+c2.b+'y = '+c2.c+' <span class="dim">(Waktu)</span></div>';
+    h+='<div class="math-line">'+c3.a+'x + '+c3.b+'y = '+c3.c+' <span class="dim">(Bahan)</span></div></div></div>';
+
+    h+='<div class="howto-step"><div class="howto-num">2</div><div><p><strong>Cari perpotongan setiap pasang garis</strong></p>';
+    for(let i=0;i<cs.length;i++)for(let j=i+1;j<cs.length;j++){
+        const p=ix(cs[i],cs[j]);if(!p||!isFinite(p.x)||!isFinite(p.y))continue;
+        const rx=Math.round(p.x*100)/100,ry=Math.round(p.y*100)/100;
+        const ok=feasible({x:rx,y:ry},cs);
+        h+='<div class="math-line" style="border-left-color:'+(ok?'var(--success)':'var(--error)')+'">';
+        h+='<span class="dim">'+cs[i].l+' ∩ '+cs[j].l+':</span> '+cs[i].a+'x + '+cs[i].b+'y = '+cs[i].c+' dan '+cs[j].a+'x + '+cs[j].b+'y = '+cs[j].c;
+        h+='<br><span class="dim">Hasil:</span> ';
+        h+=ok?'<span class="hl">('+rx+', '+ry+')</span>':'<span class="bad">('+rx+', '+ry+') — tidak memenuhi kendala</span>';
+        h+='</div>';
+    }
+    // Perpotongan dengan sumbu
+    for(let i=0;i<cs.length;i++){
+        if(Math.abs(cs[i].b)>1e-10){const y0=Math.round((cs[i].c/cs[i].b)*100)/100;if(y0>=0&&feasible({x:0,y:y0},cs))h+='<div class="math-line" style="border-left-color:var(--success)"><span class="dim">'+cs[i].l+' ∩ x=0:</span> (0, '+y0+')</div>'}
+        if(Math.abs(cs[i].a)>1e-10){const x0=Math.round((cs[i].c/cs[i].a)*100)/100;if(x0>=0&&feasible({x:x0,y:0},cs))h+='<div class="math-line" style="border-left-color:var(--success)"><span class="dim">'+cs[i].l+' ∩ y=0:</span> ('+x0+', 0)</div>'}
+    }
+    h+='</div></div>';
+
+    h+='<div class="howto-step"><div class="howto-num">3</div><div><p><strong>Saring titik yang memenuhi SEMUA kendala</strong></p>';
+    h+='<p>Diperoleh <strong>'+corners.length+' titik pojok</strong> daerah fisibel.</p></div></div>';
+
+    h+='<div class="howto-step"><div class="howto-num">4</div><div><p><strong>Hitung P = '+obj.a+'x + '+obj.b+'y di setiap titik pojok</strong></p>';
+    corners.forEach((p,i)=>{
+        const P=Math.round((obj.a*p.x+obj.b*p.y)*100)/100;
+        const isOpt=p.x===opt.x&&p.y===opt.y;
+        h+='<div class="math-line" style="border-left-color:'+(isOpt?'var(--gold)':'var(--border)')+'">';
+        h+='Titik '+String.fromCharCode(65+i)+' ('+p.x+', '+p.y+'): P = '+obj.a+'\u00D7'+p.x+' + '+obj.b+'\u00D7'+p.y+' = '+(obj.a*p.x)+' + '+(obj.b*p.y)+' = ';
+        h+=isOpt?'<span class="hl">'+P+' \u2190 MAKSIMUM</span>':P;
+        h+='</div>';
+    });
+    h+='</div></div>';
+
+    h+='<div class="howto-step"><div class="howto-num">5</div><div><p><strong>Pilih yang terbesar</strong></p>';
+    h+='<p>Nilai terbesar: <strong>P = '+(Math.round((obj.a*opt.x+obj.b*opt.y)*100)/100)+'</strong> pada <strong>x = '+opt.x+'</strong>, <strong>y = '+opt.y+'</strong>.</p></div></div>';
+    return h;
+}
+
+// =====================================================
+// RUN SIMULATION
+// =====================================================
+function runSimulation(){
+    const fields=['c1a','c1b','c2a','c2b','c3a','c3b','predX','predY'];
+    for(const id of fields){if(!document.getElementById(id).value&&document.getElementById(id).value!=='0'){toast('<i class="fas fa-exclamation-triangle"></i> Isi semua koefisien dan prediksi!','error');SFX.err();document.getElementById(id).focus();return}}
+
+    SFX.click();
+    const cs=getC(),obj=getObj();
+    const predX=parseFloat(document.getElementById('predX').value),predY=parseFloat(document.getElementById('predY').value);
+    const corners=findCorners(cs);
+    if(corners.length<3){toast('<i class="fas fa-exclamation-triangle"></i> Daerah fisibel tidak terbentuk. Periksa koefisien!','error');SFX.err();drawEmpty();return}
+
+    // Cek apakah ada titik tidak bulat
+    let hasDecimal=false;
+    corners.forEach(p=>{if(!isInt(p.x)||!isInt(p.y))hasDecimal=true});
+
+    corners.forEach(p=>p.P=Math.round((obj.a*p.x+obj.b*p.y)*100)/100);
+    let oi=0;for(let i=1;i<corners.length;i++)if(corners[i].P>corners[oi].P)oi=i;
+    const opt=corners[oi];opt.isOptimal=true;
+
+    const predP=Math.round((obj.a*predX+obj.b*predY)*100)/100;
+    const dx=Math.abs(predX-opt.x),dy=Math.abs(predY-opt.y),dP=Math.round(Math.abs(predP-opt.P)*100)/100;
+
+    drawGraph(cs,corners,opt,{x:predX,y:predY});
+
+    document.getElementById('resPred').textContent='('+predX+', '+predY+')';
+    document.getElementById('resPredP').textContent='P = Rp'+(predP*1000).toLocaleString('id-ID');
+    document.getElementById('resSim').textContent='('+opt.x+', '+opt.y+')';
+    document.getElementById('resSimP').textContent='P = Rp'+(opt.P*1000).toLocaleString('id-ID');
+    document.getElementById('resDiff').textContent='('+dx.toFixed(1)+', '+dy.toFixed(1)+')';
+    document.getElementById('resDiffP').textContent='\u0394P = Rp'+(dP*1000).toLocaleString('id-ID');
+
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    let stars=0,stxt='';
+    if(dist<.5){stars=3;stxt='Sempurna! Prediksi tepat sasaran!'}
+    else if(dist<5){stars=2;stxt='Bagus! Sangat mendekati.'}
+    else if(dist<15){stars=1;stxt='Cukup baik, terus berlatih!'}
+    else{stars=0;stxt='Belum tepat. Pelajari penjelasan di bawah.'}
+    const sc=document.getElementById('starsContainer');sc.innerHTML='';
+    for(let i=0;i<3;i++)sc.innerHTML+='<i class="fas fa-star '+(i<stars?'lit':'')+'"></i> ';
+    document.getElementById('starsText').textContent=stxt;
+
+    const tb=document.getElementById('cornerBody');tb.innerHTML='';
+    corners.forEach((p,i)=>{
+        const tr=document.createElement('tr');if(p.isOptimal)tr.className='optimal';
+        const decWarn=(!isInt(p.x)||!isInt(p.y))?' <i class="fas fa-exclamation-triangle" style="color:var(--error);font-size:.7rem" title="Bukan bilangan bulat!"></i>':'';
+        tr.innerHTML='<td>'+String.fromCharCode(65+i)+decWarn+'</td><td>'+p.x+'</td><td>'+p.y+'</td><td>'+p.P+'</td><td>'+(p.isOptimal?'<i class="fas fa-crown" style="color:var(--gold)"></i> Optimum':'—')+'</td>';
+        tb.appendChild(tr);
+    });
+
+    document.getElementById('howtoContent').innerHTML=buildHowTo(cs,obj,corners,opt);
+
+    let warnTxt='';
+    if(hasDecimal) warnTxt='<br><br><span style="color:var(--error);font-weight:600"><i class="fas fa-exclamation-triangle"></i> Perhatian:</span> Ada titik pojok yang <strong>bukan bilangan bulat</strong>. Dalam konteks nyata, jumlah cup harus bulat. Geser slider ke nilai yang menghasilkan bilangan bulat, lalu jalankan simulasi ulang.';
+
+    const ex=document.getElementById('explanationBox');
+    ex.innerHTML='<strong><i class="fas fa-mug-hot" style="color:var(--accent2)"></i> Kesimpulan Bisnis:</strong><br><br>'+
+        'Dengan batas: Modal '+cs[0].c+' ratus ribu, Waktu '+cs[1].c+' menit, Bahan '+cs[2].c+' puluh gram, '+
+        'sebaiknya produksi <strong>'+opt.x+' cup Espresso</strong> dan <strong>'+opt.y+' cup Cappuccino</strong> '+
+        'untuk keuntungan <strong>Rp'+(opt.P*1000).toLocaleString('id-ID')+'</strong>.'+warnTxt+
+        '<br><br>'+(dist<.5?'Prediksi Anda <strong>sempurna</strong>!':
+         dist<5?'Prediksi <strong>sangat baik</strong>.':dist<15?'Prediksi <strong>cukup dekat</strong>. Kunci: nilai optimum selalu di titik pojok.':'Prediksi <strong>belum tepat</strong>. Pelajari langkah di atas!')
+
+    document.getElementById('resultsArea').style.display='block';
+    addPts(stars*30+10);SFX.done();
+    if(hasDecimal){toast('<i class="fas fa-exclamation-triangle"></i> Ada titik tidak bulat! Periksa slider.','warning')}else{toast('<i class="fas fa-star"></i> Simulasi selesai! +'+(stars*30+10)+' poin',stars>=2?'success':'info')}
+    setTimeout(()=>document.getElementById('resultsArea').scrollIntoView({behavior:'smooth',block:'start'}),300)
+}
+
+// =====================================================
+// CANVAS
+// =====================================================
+const PAD=50;let xM=80,yM=60;
+function m2c(mx,my,w,h){return[PAD+(mx/xM)*(w-2*PAD),PAD+(h-2*PAD)-(my/yM)*(h-2*PAD)]}
+
+function drawEmpty(){
+    const cv=document.getElementById('graphCanvas'),ctx=cv.getContext('2d'),w=cv.width,h=cv.height;
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#FFFCF7';ctx.fillRect(0,0,w,h);drawGrid(ctx,w,h);drawAxes(ctx,w,h);
+    ctx.fillStyle='rgba(139,115,85,.3)';ctx.font='500 15px "DM Sans",sans-serif';ctx.textAlign='center';
+    ctx.fillText('Isi koefisien, atur slider, tulis prediksi,',w/2,h/2-10);
+    ctx.fillText('lalu klik "Jalankan Simulasi"',w/2,h/2+14)
+}
+function drawGrid(ctx,w,h){const pw=w-2*PAD,ph=h-2*PAD;ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=1;for(let x=0;x<=xM;x+=10){const[cx]=m2c(x,0,w,h);ctx.beginPath();ctx.moveTo(cx,PAD);ctx.lineTo(cx,PAD+ph);ctx.stroke()}for(let y=0;y<=yM;y+=10){const[,cy]=m2c(0,y,w,h);ctx.beginPath();ctx.moveTo(PAD,cy);ctx.lineTo(PAD+pw,cy);ctx.stroke()}}
+function drawAxes(ctx,w,h){
+    const pw=w-2*PAD,ph=h-2*PAD,[ox,oy]=m2c(0,0,w,h);
+    ctx.strokeStyle='#2C1810';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(PAD,oy);ctx.lineTo(PAD+pw+5,oy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(ox,PAD+ph+5);ctx.lineTo(ox,PAD-5);ctx.stroke();
+    ctx.fillStyle='#2C1810';
+    ctx.beginPath();ctx.moveTo(PAD+pw+5,oy);ctx.lineTo(PAD+pw-5,oy-4);ctx.lineTo(PAD+pw-5,oy+4);ctx.fill();
+    ctx.beginPath();ctx.moveTo(ox,PAD-5);ctx.lineTo(ox-4,PAD+5);ctx.lineTo(ox+4,PAD+5);ctx.fill();
+    ctx.font='600 13px "DM Sans",sans-serif';ctx.textAlign='center';ctx.fillText('Espresso (x)',PAD+pw/2,oy+30);
+    ctx.save();ctx.translate(ox-30,PAD+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText('Cappuccino (y)',0,0);ctx.restore();
+    ctx.font='400 10px "DM Sans",sans-serif';ctx.fillStyle='#8B7355';ctx.textAlign='center';
+    for(let x=10;x<=xM;x+=10){const[cx]=m2c(x,0,w,h);ctx.beginPath();ctx.moveTo(cx,oy-3);ctx.lineTo(cx,oy+3);ctx.stroke();ctx.fillText(x,cx,oy+15)}
+    ctx.textAlign='right';for(let y=10;y<=yM;y+=10){const[,cy]=m2c(0,y,w,h);ctx.beginPath();ctx.moveTo(ox-3,cy);ctx.lineTo(ox+3,cy);ctx.stroke();ctx.fillText(y,ox-8,cy+4)}
+}
+
+function drawGraph(cs,corners,opt,pred){
+    const cv=document.getElementById('graphCanvas'),ctx=cv.getContext('2d'),w=cv.width,h=cv.height;
+    let mx=10,my=10;cs.forEach(c=>{if(c.b>0)my=Math.max(my,Math.ceil(c.c/Math.min(c.b,1)/10)*10+10);if(c.a>0)mx=Math.max(mx,Math.ceil(c.c/Math.min(c.a,1)/10)*10+10)});
+    xM=Math.max(mx,80);yM=Math.max(my,60);
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#FFFCF7';ctx.fillRect(0,0,w,h);drawGrid(ctx,w,h);
+    const sorted=sortPoly(corners);
+    if(sorted.length>=3){ctx.beginPath();const[sx,sy]=m2c(sorted[0].x,sorted[0].y,w,h);ctx.moveTo(sx,sy);for(let i=1;i<sorted.length;i++){const[px,py]=m2c(sorted[i].x,sorted[i].y,w,h);ctx.lineTo(px,py)}ctx.closePath();ctx.fillStyle='rgba(212,160,83,.18)';ctx.fill();ctx.strokeStyle='rgba(212,160,83,.5)';ctx.lineWidth=1.5;ctx.stroke()}
+    cs.forEach(c=>drawLine(ctx,c,w,h));drawAxes(ctx,w,h);
+    corners.forEach((p,i)=>{const[cx,cy]=m2c(p.x,p.y,w,h);ctx.beginPath();ctx.arc(cx,cy,p.isOptimal?8:5,0,Math.PI*2);ctx.fillStyle=p.isOptimal?'#2E7D32':'#5C3A21';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#2C1810';ctx.font=(p.isOptimal?'700':'500')+' 11px "DM Sans",sans-serif';ctx.textAlign='left';ctx.fillText(String.fromCharCode(65+i)+'('+p.x+','+p.y+')',cx+10,cy-6)});
+    if(pred){const[px,py]=m2c(pred.x,pred.y,w,h),[ox,oy]=m2c(opt.x,opt.y,w,h);ctx.setLineDash([5,5]);ctx.strokeStyle='#E65100';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(ox,oy);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(px,py,7,0,Math.PI*2);ctx.fillStyle='#E65100';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2.5;ctx.stroke();ctx.fillStyle='#E65100';ctx.font='700 11px "DM Sans",sans-serif';ctx.textAlign='right';ctx.fillText('Pred('+pred.x+','+pred.y+')',px-10,py-8)}
+    const[opx,opy]=m2c(opt.x,opt.y,w,h);ctx.font='16px "Font Awesome 6 Free"';ctx.fillStyle='#F0C675';ctx.textAlign='center';ctx.fillText('\uf521',opx,opy-18)
+}
+function drawLine(ctx,c,w,h){
+    ctx.strokeStyle=c.col;ctx.lineWidth=2;ctx.setLineDash([]);ctx.beginPath();const pts=[];
+    if(Math.abs(c.b)>1e-10){const y0=c.c/c.b;if(y0>=-2&&y0<=yM+2)pts.push({x:0,y:y0});const y2=(c.c-c.a*xM)/c.b;if(y2>=-2&&y2<=yM+2)pts.push({x:xM,y:y2})}
+    if(Math.abs(c.a)>1e-10){const x0=c.c/c.a;if(x0>=-2&&x0<=xM+2)pts.push({x:x0,y:0});const x2=(c.c-c.b*yM)/c.a;if(x2>=-2&&x2<=xM+2)pts.push({x:x2,y:yM})}
+    const u=[],s=new Set();pts.forEach(p=>{const k=Math.round(p.x*10)+','+Math.round(p.y*10);if(!s.has(k)){s.add(k);u.push(p)}});
+    if(u.length>=2){const[cx1,cy1]=m2c(u[0].x,u[0].y,w,h),[cx2,cy2]=m2c(u[1].x,u[1].y,w,h);ctx.beginPath();ctx.moveTo(cx1,cy1);ctx.lineTo(cx2,cy2);ctx.stroke()}
+    if(u.length>=1){const lp=u[0],[lx,ly]=m2c(Math.min(lp.x+3,xM-8),Math.min(lp.y+2,yM-4),w,h);ctx.fillStyle=c.col;ctx.font='600 10px "DM Sans",sans-serif';ctx.textAlign='left';ctx.fillText(c.a+'x+'+c.b+'y='+c.c,lx,ly)}
+}
+
+// =====================================================
+// LKPD
+// =====================================================
+const LK={1:['espresso','x','cup','cappuccino','y','variabel','menu','produk','jumlah'],2:['15x','20y','keuntungan','maksimum','profit','rp15','rp20','ribuan','tujuan'],3:['2x','y','x +','3y','100','modal','waktu','bahan','kopi','pertidaksamaan','koefisien','1 menit','3 menit'],4:['pojok','perpotongan','eliminasi','substitusi','garis','persamaan','iris','fisibel','segitiga'],5:['bulat','desimal','tidak bisa','cup','integer','slider','geser','snap','bilangan','utuh'],6:['rekomendasi','produksi','espresso','cappuccino','keuntungan','optimal','saran','meningkatkan','bisnis']};
+function checkLKPD(){
+    SFX.chk();let sc=0;
+    for(let i=1;i<=6;i++){
+        const v=document.getElementById('lkpd'+i).value.toLowerCase().trim(),fb=document.getElementById('lkpdFb'+i);
+        if(!v){fb.innerHTML='<span style="color:var(--error)"><i class="fas fa-exclamation-circle"></i> Belum diisi.</span>';continue}
+        const m=LK[i].filter(k=>v.includes(k)).length,r=m/LK[i].length;
+        if(r>=.5){sc+=15;fb.innerHTML='<span style="color:var(--success)"><i class="fas fa-check-circle"></i> Baik! (+15)</span>';document.getElementById('lkpd'+i).style.borderColor='var(--success)'}
+        else if(r>=.25){sc+=8;fb.innerHTML='<span style="color:#E65100"><i class="fas fa-info-circle"></i> Cukup. (+8)</span>';document.getElementById('lkpd'+i).style.borderColor='#E65100'}
+        else{fb.innerHTML='<span style="color:var(--error)"><i class="fas fa-times-circle"></i> Perlu diperbaiki.</span>';document.getElementById('lkpd'+i).style.borderColor='var(--error)'}
+    }
+    const el=document.getElementById('lkpdScore');el.style.display='block';
+    el.innerHTML='<div class="card" style="border-left:4px solid '+(sc>=60?'var(--success)':sc>=30?'#E65100':'var(--error)')+'"><div style="font-size:1.1rem;font-weight:700;color:var(--dark2)"><i class="fas fa-clipboard-check" style="color:var(--accent)"></i> Skor LKPD: '+sc+' / 90</div><div style="width:100%;height:8px;background:var(--bg2);border-radius:4px;margin-top:8px;overflow:hidden"><div style="width:'+(sc/90*100)+'%;height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:4px;transition:width .5s"></div></div></div>';
+    addPts(sc);sc>=60?SFX.ok():SFX.err();toast('<i class="fas fa-pen"></i> LKPD: '+sc+'/90',sc>=60?'success':'warning')
+}
+function clearLKPD(){SFX.click();for(let i=1;i<=6;i++){document.getElementById('lkpd'+i).value='';document.getElementById('lkpd'+i).style.borderColor='var(--border)';document.getElementById('lkpdFb'+i).innerHTML=''}document.getElementById('lkpdScore').style.display='none';toast('<i class="fas fa-eraser"></i> LKPD dihapus','info')}
+
+document.addEventListener('DOMContentLoaded',initSplash);
+
+// Mengambil elemen audio dan tombol dari HTML
+const bgMusic = document.getElementById('bgMusic');
+let isMusicPlaying = false;
+
+// Fungsi yang dipanggil saat pengguna klik "Mulai Laboratorium"
+function startApp() {
+    // 1. Sembunyikan Splash Screen & Tampilkan App (Kode Utama Anda)
+    document.getElementById('splash').classList.add('hidden');
+    document.getElementById('app').classList.add('show');
+    
+    // Putar musik latar
+    const bgMusic = document.getElementById('bgMusic');
+    bgMusic.play().catch(err => console.log("Autoplay dicegah oleh browser"));
+}
+
+// Fungsi untuk memutar musik
+function playMusic() {
+    bgMusic.play().then(() => {
+        isMusicPlaying = true;
+        updateSoundButton();
+    }).catch(error => {
+        console.log("Pemutaran musik tertunda:", error);
+    });
+}
+
+// Fungsi untuk Toggle ON/OFF (Dihubungkan ke tombol Navbar)
+function toggleMusic() {
+    if (isMusicPlaying) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+    } else {
+        bgMusic.play();
+        isMusicPlaying = true;
+    }
+    updateSoundButton();
+}
+
+// Fungsi untuk mengubah ikon tombol di navbar (🔊 / 🔇)
+function updateSoundButton() {
+    const btn = document.getElementById('btnSoundNav');
+    if (btn) {
+        btn.innerHTML = isMusicPlaying ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+    }
+}
+
+// Atur volume awal musik saat aplikasi dimuat (50%)
+document.getElementById('bgMusic').volume = 0.5;
+
+function changeVolume(val) {
+    const bgMusic = document.getElementById('bgMusic');
+    const volIcon = document.getElementById('volumeIcon');
+    
+    // Ubah volume audio (nilai antara 0.0 sampai 1.0)
+    bgMusic.volume = val;
+    
+    // Ubah emoji ikon secara otomatis berdasarkan tingkat kekerasan suara
+    if (parseFloat(val) === 0) {
+        volIcon.innerText = '🔇';
+    } else if (parseFloat(val) < 0.4) {
+        volIcon.innerText = '🔈';
+    } else if (parseFloat(val) < 0.7) {
+        volIcon.innerText = '🔉';
+    } else {
+        volIcon.innerText = '🔊';
+    }
+}
+
+</script>
+<!-- Tag Audio untuk Backsound -->
+<audio id="bgMusic" src="assets/audio/bg.mp3" loop></audio>
+</body>
+</html>
